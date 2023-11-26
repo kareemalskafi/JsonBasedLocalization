@@ -1,10 +1,32 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Globalization;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+@{
+    var isRTL = CultureInfo.CurrentCulture.Name.StartsWith("ar");
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="@(isRTL ? "RTL" : "LTR")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - JsonBasedLocalization.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+   
+
+    @if (isRTL)
+    {
+        <!-- RTL Latest compiled and minified CSS From=> www.rtlcss.com/cdn/css-frameworks/bootstrap/index.html-->
+        <link rel="stylesheet"
+              href="https://cdn.rtlcss.com/bootstrap/v4.5.3/css/bootstrap.min.css"
+              integrity="sha384-JvExCACAZcHNJEc7156QaHXTnQL3hQBixvj5RV5buE7vgnNEzzskDtx9NQ4p6BJe"
+              crossorigin="anonymous" />
+    }
+   
+  
+
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/JsonBasedLocalization.Web.styles.css" asp-append-version="true" />
 </head>
@@ -20,14 +42,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@localizer["home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@localizer["privacy"]</a>
                         </li>
                     </ul>
                 </div>
             </div>
+            <div class="p-4">
+                <partial name="_SelectLanguage" />
+            </div>
+
         </nav>
     </header>
     <div class="container">

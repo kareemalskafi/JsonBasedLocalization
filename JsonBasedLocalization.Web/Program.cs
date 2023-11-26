@@ -25,7 +25,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
     {
-        //meby remove name:
     new CultureInfo("en-US"),
     new CultureInfo("ar-EG"),
     new CultureInfo("de-DE"),
