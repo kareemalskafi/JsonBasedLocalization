@@ -7,14 +7,62 @@ namespace JsonBasedLocalization.Web
     public class JsonStringLocalizer : IStringLocalizer
     {
         private readonly JsonSerializer _serializer = new();
-        public LocalizedString this[string name] => throw new NotImplementedException();
+        public LocalizedString this[string name]
+        {
+        
+                get
+            {
+                    var value = GetString(name);
+                    return new LocalizedString(name, value);
+                }
+            
+        }
 
-        public LocalizedString this[string name, params object[] arguments] => throw new NotImplementedException();
+        public LocalizedString this[string name, params object[] arguments] 
+        {
+            get
+            {
+                var actualValue = this[name];
+                return !actualValue.ResourceNotFound
+                    ? new LocalizedString(name, string.Format(actualValue.Value, arguments))
+                    : actualValue;
+            }
+        }
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
-            throw new NotImplementedException();
+            var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
+
+            using FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using StreamReader streamReader = new(stream);
+            using JsonTextReader reader = new(streamReader);
+
+            while (reader.Read())
+            {
+                if (reader.TokenType != JsonToken.PropertyName)
+                    continue;
+
+                var key = reader.Value as string;
+                reader.Read();
+                var value = _serializer.Deserialize<string>(reader);
+                yield return new LocalizedString(key, value);
+            }
         }
+
+        private string GetString(string key)
+        {
+
+            var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
+            var FullFilePath = Path.GetFullPath(filePath);
+
+            if (File.Exists(FullFilePath)) 
+            {
+                var result = GetValueFromJSON(key, FullFilePath);
+                return result;
+            }
+            return string.Empty;
+        }
+
 
         private string GetValueFromJSON(string propertyName , string filePath)
         {
@@ -32,6 +80,7 @@ namespace JsonBasedLocalization.Web
                     return _serializer.Deserialize<string>(reader);
                 }
             }
+
             return string.Empty;
         }
          

@@ -1,5 +1,6 @@
 ﻿using JsonBasedLocalization.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 
 namespace JsonBasedLocalization.Web.Controllers
@@ -8,13 +9,16 @@ namespace JsonBasedLocalization.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IStringLocalizer<HomeController> _Localizer;
+        public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
+            _Localizer = localizer;
         }
 
         public IActionResult Index()
         {
+            ViewBag.WelcomeMessage = _Localizer["welcome"];
             return View();
         }
 
