@@ -1,4 +1,5 @@
 using JsonBasedLocalization.Web;
+using JsonBasedLocalization.Web.Middlewares;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Localization;
@@ -32,7 +33,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     new CultureInfo("de-DE"),
     };
 
-    options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0], uiCulture: supportedCultures[0]);
+    // options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0], uiCulture: supportedCultures[0]);
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
@@ -55,14 +56,16 @@ app.UseRouting();
 
 var supportedCultures = new[] { "en-US", "ar-EG", "de-DE" };
 var localiztionOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture(supportedCultures[0])
+   // .SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 
+
 app.UseRequestLocalization(localiztionOptions);
 
-
 app.UseAuthorization();
+
+app.UseRequestCulture();
 
 app.MapControllerRoute(
     name: "default",
